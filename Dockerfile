@@ -1,2 +1,4 @@
-FROM ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/web:base
+FROM 251555968592.dkr.ecr.us-east-1.amazonaws.com/web:base
+
+COPY src /var/www/src/
 
