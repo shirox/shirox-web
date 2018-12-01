@@ -1,0 +1,60 @@
+version: 2
+jobs:
+  build:
+    environment:
+      - AWS_REGION: "us-east-1"
+      - ECR_REPOSITORY_NAME: "web"
+    steps:
+      - run:
+          name: login ECR.
+          command: $(aws ecr get-login --no-include-email --region ${AWS_REGION})
+      - run:
+          name: build image.
+          command: docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} .
+      - run:
+          name: push image.
+          command: |
+            docker tag ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
+            docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG}
+            docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
+  deploy:
+    environment:
+      - AWS_REGION: "us-east-1"
+      - ECR_REPOSITORY_NAME: "web"
+      - GIT_REPOSITORY_NAME: "git@github.com:shirox/shirox-web.git"
+    steps:
+      - run:
+          name: login ECR.
+          command: $(aws ecr get-login --no-include-email --region ${AWS_REGION})
+      - run:
+          name: deploy
+          command: |
+            git clone --depth=1 -b ${CIRCLE_TAG} ${GIT_REPOSITORY_NAME}
+            ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${REPOSITORY_NAME}:${CIRCLE_TAG}
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /v[0-9]+\.[0-9]+\.[0-9]+/
+            branches:
+              ignore: /.*/
+      - approve:
+          type: approval
+          requires:
+            - build
+          filters:
+            tags:
+              only: /v\-[0-9]+\.[0-9]+\.[0-9]+/
+            branches:
+              ignore: /.*/
+      - deploy:
+          requires:
+            - approve
+          filters:
+            tags:
+              only: /v\-[0-9]+\.[0-9]+\.[0-9]+/
+            branches:
+              ignore: /.*/
