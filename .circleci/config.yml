@@ -12,7 +12,7 @@ jobs:
       - run:
           name: build image.
           command: |
-            git clone --depth=1 -b ${CIRCLE_TAG} ${GIT_REPOSITORY_NAME}
+            git clone --depth=1 -b ${CIRCLE_TAG} ${CIRCLE_REPOSITORY_URL}
             docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} .
       - run:
           name: push image.
@@ -25,7 +25,6 @@ jobs:
     environment:
       - AWS_REGION: "us-east-1"
       - ECR_REPOSITORY_NAME: "web"
-      - GIT_REPOSITORY_NAME: "git@github.com:shirox/shirox-web.git"
     steps:
       - run:
           name: login ECR.
@@ -33,7 +32,7 @@ jobs:
       - run:
           name: deploy
           command: |
-            git clone --depth=1 -b ${CIRCLE_TAG} ${GIT_REPOSITORY_NAME}
+            git clone --depth=1 -b ${CIRCLE_TAG} ${CIRCLE_REPOSITORY_URL}
             ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${REPOSITORY_NAME}:${CIRCLE_TAG}
 workflows:
   version: 2
