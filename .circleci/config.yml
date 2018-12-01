@@ -1,6 +1,7 @@
 version: 2
 jobs:
   build-production:
+    machine: true
     environment:
       - AWS_REGION: "us-east-1"
       - ECR_REPOSITORY_NAME: "web"
@@ -18,6 +19,7 @@ jobs:
             docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG}
             docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
   deploy-production:
+    machine: true
     environment:
       - AWS_REGION: "us-east-1"
       - ECR_REPOSITORY_NAME: "web"
