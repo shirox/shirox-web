@@ -11,7 +11,9 @@ jobs:
           command: $(aws ecr get-login --no-include-email --region ${AWS_REGION})
       - run:
           name: build image.
-          command: docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} .
+          command: |
+            git clone --depth=1 -b ${CIRCLE_TAG} ${GIT_REPOSITORY_NAME}
+            docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} .
       - run:
           name: push image.
           command: |
