@@ -25,7 +25,10 @@ jobs:
             docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest
       - run:
           name: Exec ecs-deploy
-          command: ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${REPOSITORY_NAME}:${CIRCLE_TAG}
+          command: |
+            git clone --depth=1 -b ${CIRCLE_TAG} ${CIRCLE_REPOSITORY_URL}
+            cd ${CIRCLE_PROJECT_REPONAME}
+            ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${REPOSITORY_NAME}:${CIRCLE_TAG}
 workflows:
   version: 2
   deploy:
@@ -33,6 +36,12 @@ workflows:
       - build-production:
           filters:
             tags:
-              only: /v[0-9]+\.[0-9]+\.[0-9]+/
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+            branches:
+              ignore: /.*/
+      - build-develop:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+dev$/
             branches:
               ignore: /.*/
