@@ -26,7 +26,6 @@ jobs:
       - run:
           name: Exec ecs-deploy
           command: |
-            git clone --depth=1 -b ${CIRCLE_TAG} ${CIRCLE_REPOSITORY_URL}
             cd ${CIRCLE_PROJECT_REPONAME}
             ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${REPOSITORY_NAME}:${CIRCLE_TAG}
 workflows:
