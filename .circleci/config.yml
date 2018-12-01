@@ -27,7 +27,7 @@ jobs:
           name: Exec ecs-deploy
           command: |
             cd ${CIRCLE_PROJECT_REPONAME}
-            ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${ECR_REPOSITORY_NAME}:${CIRCLE_TAG}
+            ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG}
 workflows:
   version: 2
   deploy:
