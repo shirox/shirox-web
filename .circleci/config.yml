@@ -27,7 +27,7 @@ jobs:
           name: Exec ecs-deploy
           command: |
             cd ${CIRCLE_PROJECT_REPONAME}
-            ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${REPOSITORY_NAME}:${CIRCLE_TAG}
+            ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${ECR_REPOSITORY_NAME}:${CIRCLE_TAG}
 workflows:
   version: 2
   deploy:
