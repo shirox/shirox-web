@@ -13,7 +13,7 @@ jobs:
           name: build image.
           command: |
             git clone --depth=1 -b ${CIRCLE_TAG} ${CIRCLE_REPOSITORY_URL}
-            cp ${ECR_REPOSITORY_NAME}/Dockerfile .
+            cp ${CIRCLE_PROJECT_REPONAME}/Dockerfile .
             docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} .
       - run:
           name: push image.
