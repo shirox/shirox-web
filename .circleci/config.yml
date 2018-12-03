@@ -7,6 +7,7 @@ jobs:
       - ECR_REPOSITORY_NAME: "web"
       - CLUSTER_NAME: "shirox-test2"
       - SERVICE_NAME: "web2"
+      - ECS_DEPLOY_TIMEOUT: "600" #sec
     steps:
       - run:
           name: Login to ECR.
@@ -27,7 +28,7 @@ jobs:
           name: Exec ecs-deploy
           command: |
             cd ${CIRCLE_PROJECT_REPONAME}
-            ./ecs-deploy -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} -r ${AWS_REGION}
+            ./ecs-deploy -t ${ECS_DEPLOY_TIMEOUT} -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} -r ${AWS_REGION} -v
 workflows:
   version: 2
   deploy:
