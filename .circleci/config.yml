@@ -28,7 +28,7 @@ jobs:
           name: Exec ecs-deploy
           command: |
             cd ${CIRCLE_PROJECT_REPONAME}
-            ./ecs-deploy -t ${ECS_DEPLOY_TIMEOUT} -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} -r ${AWS_REGION} -v --skip-deployments-check
+            ./ecs-deploy -t ${ECS_DEPLOY_TIMEOUT} -c ${CLUSTER_NAME} -n ${SERVICE_NAME} -i ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${CIRCLE_TAG} -r ${AWS_REGION} -v
 workflows:
   version: 2
   deploy:
